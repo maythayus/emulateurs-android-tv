@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Émulateurs de consoles pour Android TV compatibles manette Xbox Nano : état des projets, support Android TV, liens GitHub officiels.">
+<title>Émulateurs Android TV</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: guide d'achat en colonne — en-tête, kits par box, filtres collants, liste de fiches par console */
+:root{
+  --bg:#eef1f4; --surface:#ffffff; --fg:#17202a; --muted:#5b6774; --line:#d5dbe2;
+  --accent:#107c41; --accent-ink:#ffffff; --accent-soft:#e2f2e8;
+  --ok:#137a3a; --ok-bg:#dff3e6; --warn:#8a5a00; --warn-bg:#fbf0d6; --bad:#a3262a; --bad-bg:#f8e1e1; --na:#56606b; --na-bg:#e8ebef;
+  --f-display:"Chakra Petch","Segoe UI",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f141a; --surface:#171e26; --fg:#e4e9ee; --muted:#93a0ad; --line:#2a3440;
+  --accent:#3fbf73; --accent-ink:#06140b; --accent-soft:#16301f;
+  --ok:#5fd48d; --ok-bg:#163222; --warn:#e8b75a; --warn-bg:#352a12; --bad:#f08a8a; --bad-bg:#3a1a1c; --na:#a3adb8; --na-bg:#232c36;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f141a; --surface:#171e26; --fg:#e4e9ee; --muted:#93a0ad; --line:#2a3440;
+  --accent:#3fbf73; --accent-ink:#06140b; --accent-soft:#16301f;
+  --ok:#5fd48d; --ok-bg:#163222; --warn:#e8b75a; --warn-bg:#352a12; --bad:#f08a8a; --bad-bg:#3a1a1c; --na:#a3adb8; --na-bg:#232c36;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--f-body);margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:28px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:.01em}
+h1{font-size:clamp(28px,5vw,42px);line-height:1.1}
+h2{font-size:22px}
+h3{font-size:18px}
+p{margin:0}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.eyebrow{font:500 12px var(--f-mono);text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+header{display:grid;gap:12px}
+header .lede{max-width:68ch;color:var(--muted);font-size:16px}
+.pad{display:flex;flex-wrap:wrap;gap:8px 18px;font:13px var(--f-mono);color:var(--muted)}
+.pad b{color:var(--fg);font-weight:500}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:grid;gap:14px;min-width:0}
+.kits{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}
+.kit{display:grid;gap:8px;align-content:start}
+.kit .tier{font:600 12px var(--f-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--accent)}
+.kit ul{margin:0;padding-left:18px;display:grid;gap:4px}
+.kit .hw{color:var(--muted);font-size:13px}
+
+.steps{margin:0;padding-left:20px;display:grid;gap:6px;max-width:75ch}
+
+.filters{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;display:grid;gap:10px;border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{font:500 13px var(--f-body);border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:6px 12px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.toggle{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--muted);cursor:pointer}
+#q{flex:1 1 220px;min-width:0;font:14px var(--f-body);padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg)}
+.count{font:13px var(--f-mono);color:var(--muted)}
+
+.group{display:grid;gap:12px}
+.group h2{display:flex;gap:10px;align-items:baseline}
+.group h2 small{font:400 13px var(--f-mono);color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:10px;align-content:start;min-width:0}
+.card.dead{opacity:.72}
+.card .top{display:flex;justify-content:space-between;gap:10px;align-items:start}
+.card .sys{color:var(--muted);font-size:13px}
+.ver{font:12px var(--f-mono);color:var(--muted)}
+.badges{display:flex;flex-wrap:wrap;gap:6px}
+.b{font:500 11.5px var(--f-mono);padding:3px 8px;border-radius:5px;white-space:nowrap}
+.b.ok{background:var(--ok-bg);color:var(--ok)} .b.warn{background:var(--warn-bg);color:var(--warn)}
+.b.bad{background:var(--bad-bg);color:var(--bad)} .b.na{background:var(--na-bg);color:var(--na)}
+dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:13px}
+dt{color:var(--muted);font:12px var(--f-mono);padding-top:2px}
+dd{margin:0;min-width:0}
+.note{font-size:13.5px}
+.link{font:500 13px var(--f-mono);word-break:break-all}
+.empty{color:var(--muted);padding:24px 0}
+
+.legal{display:grid;gap:10px;font-size:14px}
+.legal p{max-width:78ch}
+.sources{font-size:13px;color:var(--muted)}
+.sources ul{margin:6px 0 0;padding-left:18px;display:grid;gap:3px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Guide · mis à jour le 5 novembre 2026</span>
+    <h1>Émulateurs de consoles pour Android TV, jouables à la manette Xbox Nano</h1>
+    <p class="lede">Cette page regroupe les projets publiés sur GitHub, GitLab et Forgejo, ainsi que les applis officielles, pour chaque console. Pour chacun, elle indique l'état du projet, la prise en charge d'Android TV et la puissance nécessaire sur une box.</p>
+    <div class="pad">
+      <span>Manette : <b>Xbox Nano</b> (Bluetooth, 49,99 €)</span>
+      <span>Android TV le plus récent : <b>Android TV 16</b></span>
+      <span>Android mobile : <b>17</b> (juin 2026)</span>
+    </div>
+  </header>
+
+  <section class="panel" aria-labelledby="pair">
+    <h2 id="pair">Appairer la manette</h2>
+    <ol class="steps">
+      <li>Sur la TV, ouvrez <b>Paramètres → Télécommandes et accessoires → Associer un accessoire</b>.</li>
+      <li>Allumez la manette avec le bouton Xbox, puis maintenez le bouton d'appairage jusqu'à ce que le logo clignote vite.</li>
+      <li>Choisissez « Xbox Wireless Controller » dans la liste. La TV voit la manette comme une manette Android standard. RetroArch, Lemuroid, PPSSPP, Dolphin et la plupart des émulateurs l'assignent automatiquement.</li>
+      <li>Le bouton d'action reprogrammable se règle dans l'appli <b>Accessoires Xbox</b> (sur PC ou Xbox). La manette garde ce réglage ensuite.</li>
+    </ol>
+  </section>
+
+  <section class="grid" aria-labelledby="kits" style="display:grid;gap:14px">
+    <h2 id="kits">Ce que votre box peut faire tourner</h2>
+    <div class="kits">
+      <div class="panel kit">
+        <span class="tier">Box d'entrée de gamme</span>
+        <h3>Chromecast Google TV, Google TV Streamer, box Amlogic</h3>
+        <ul>
+          <li><b>Lemuroid</b> ou <b>RetroArch</b> : NES à PS1, arcade FBNeo</li>
+          <li><b>PPSSPP</b> : PSP</li>
+          <li><b>Flycast</b> ou <b>Redream</b> : Dreamcast</li>
+          <li><b>M64Plus FZ</b> : N64 (les jeux légers)</li>
+          <li><b>ES-DE</b> ou <b>Daijishō</b> : une seule interface pour tout lancer</li>
+        </ul>
+        <p class="hw">Les puces Mali-G31/G52 suffisent jusqu'à la 5ᵉ génération de consoles. Au-delà, ça décroche.</p>
+      </div>
+      <div class="panel kit">
+        <span class="tier">Box puissante</span>
+        <h3>Nvidia Shield TV / Pro</h3>
+        <ul>
+          <li>Tout ce qui précède</li>
+          <li><b>Dolphin</b> : GameCube et Wii (beaucoup de jeux)</li>
+          <li><b>Yaba Sanshiro 2</b> : Saturn</li>
+          <li><b>MAME4droid</b> : arcade récente</li>
+          <li><b>NetherSX2</b> ou <b>ARMSX2</b> : PS2 pour les jeux les plus légers</li>
+        </ul>
+        <p class="hw">La Tegra X1 tient encore la route pour la GameCube. La PS2 reste aléatoire.</p>
+      </div>
+      <div class="panel kit">
+        <span class="tier">Hors de portée d'une box TV</span>
+        <h3>Il faut un téléphone ou une console Snapdragon récents</h3>
+        <ul>
+          <li><b>Eden</b>, <b>Citron Neo</b> : Switch</li>
+          <li><b>Azahar</b> : 3DS</li>
+          <li><b>Cemu</b> : Wii U · <b>aPS3e</b> : PS3 · <b>aX360e</b> : Xbox 360</li>
+          <li><b>Winlator</b> : jeux PC Windows</li>
+        </ul>
+        <p class="hw">Sur TV, passez plutôt par <b>Xbox Cloud Gaming</b>, ou diffusez l'écran d'un PC avec Steam Link ou Moonlight.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="list" style="display:grid;gap:16px">
+    <h2 id="list">Tous les projets</h2>
+    <div class="filters">
+      <div class="row" id="fam" role="group" aria-label="Famille de consoles"></div>
+      <div class="row">
+        <input id="q" type="search" placeholder="Rechercher un émulateur ou une console (ex. PS2, Saturn)" aria-label="Rechercher">
+        <label class="toggle"><input id="tvOnly" type="checkbox"> Interface Android TV seulement</label>
+        <label class="toggle"><input id="hideDead" type="checkbox" checked> Masquer les projets abandonnés</label>
+        <span class="count" id="count"></span>
+      </div>
+    </div>
+    <div id="out" style="display:grid;gap:28px"></div>
+  </section>
+
+  <section class="panel legal" aria-labelledby="src">
+    <h2 id="src">Sources et téléchargement</h2>
+    <p><b>GitHub, GitLab, Forgejo :</b> chaque fiche renvoie au dépôt officiel ou au site du développeur. Les APK signés s'y trouvent dans l'onglet « Releases ».</p>
+    <p><b>XDA :</b> aucun fil XDA actif et officiel n'a été retenu pour ces projets. Aujourd'hui, les développeurs publient sur GitHub et Discord. Sur XDA, les fils d'émulation servent surtout à partager des réglages par appareil, comme pour la Shield ou les box Amlogic.</p>
+    <p><b>Téléchargement :</b> installez uniquement depuis le Play Store, F-Droid ou la page « Releases » du dépôt officiel. Presque chaque appli payante a une alternative libre et gratuite dans cette liste.</p>
+    <p><b>Jeux :</b> les émulateurs sont légaux. En revanche, utilisez uniquement des ROM et des BIOS extraits de vos propres jeux et consoles.</p>
+    <div class="sources">Vérifications : dépôts GitHub/GitLab, sites officiels (dolphin-emu.org, es-de.org, epsxe.com, redream.io, uoyabause.org), APKMirror pour les dates de version, et la fiche Microsoft de la manette Xbox Nano. Les versions changent vite : consultez la page « Releases » avant d'installer.</div>
+  </section>
+</div>
+
+<script>
+const FAM={retro:"Rétro & multi-consoles",arcade:"Arcade",front:"Lanceurs (interfaces)",sony:"PlayStation",nin:"Nintendo",sega:"Sega",pc:"Xbox, PC & cloud"};
+const ST={actif:["Actif","ok"],lent:["Mises à jour lentes","warn"],exp:["Expérimental","warn"],abandon:["Abandonné","bad"]};
+const TV={oui:["Android TV : oui","ok"],via:["Android TV : via frontend","ok"],partiel:["Android TV : partiel","warn"],non:["Android TV : non","bad"],"?":["Android TV : non vérifié","na"]};
+const LIC={libre:["Libre et gratuit","ok"],gratuit:["Gratuit","na"],freemium:["Gratuit + version payante","na"],payant:["Payant","warn"],abo:["Abonnement","warn"]};
+// n nom, f famille, c consoles, s statut, v version, tv, l licence, min Android, p perf, note, u lien
+const D=[
+{n:"RetroArch",f:"retro",c:"NES, SNES, N64, GB/GBA, Mega Drive, PC Engine, Neo Geo, PS1, PSP, DS, 3DO, Atari…",s:"actif",v:"1.22.2 · nov. 2025",tv:"oui",l:"libre",min:"4.1+ (F-Droid)",p:"Les consoles 8/16 bits tournent à pleine vitesse sur n'importe quelle box. Les shaders lourds rament sur Mali.",note:"Reconnaît la manette Xbox Bluetooth automatiquement. Cœurs conseillés : FBNeo, mGBA, Snes9x, Genesis Plus GX, SwanStation (PS1), Opera (3DO), Stella (Atari).",u:"https://github.com/libretro/RetroArch"},
+{n:"Lemuroid",f:"retro",c:"NES, SNES, N64, GB/GBA, DS, 3DS, Mega Drive, Master System, PS1, PSP, Arcade, PC Engine, Atari, WonderSwan",s:"lent",v:"1.17.0",tv:"oui",l:"libre",min:"non précisé",p:"Excellent jusqu'à la PS1. N64 et PSP demandent une Shield. La 3DS n'est pas jouable sur une box.",note:"Le plus simple sur TV : interface dédiée, aucune pub, manette reconnue sans réglage.",u:"https://github.com/Swordfish90/Lemuroid"},
+{n:"mGBA",f:"retro",c:"Game Boy, Game Boy Color, Game Boy Advance",s:"actif",v:"0.10.5 · mars 2025",tv:"via",l:"libre",min:"celle du frontend",p:"Tourne partout.",note:"Le cœur GBA le plus fidèle. Pas d'appli Android autonome : utilisez-le dans RetroArch ou Lemuroid.",u:"https://github.com/mgba-emu/mgba"},
+{n:"Pizza Boy A / Pizza Boy C",f:"retro",c:"GBA (A) · Game Boy / Color (C)",s:"actif",v:"2.3.3 · août 2026",tv:"partiel",l:"freemium",min:"12L",p:"Léger, mais exige Android 12L, ce qui exclut beaucoup de box sous Android TV 9 à 11.",note:"Très précis, interface pensée pour le tactile. Manette assignable dans les réglages.",u:"https://play.google.com/store/apps/details?id=it.dbtecno.pizzaboygbapro"},
+{n:"John GBA / John GBAC",f:"retro",c:"GBA · GB/GBC + GBA",s:"lent",v:"GBAC 2.14",tv:"partiel",l:"payant",min:"non vérifié",p:"Léger.",note:"Assignation manuelle des touches de la manette. Une version Lite gratuite avec pub existe.",u:"https://play.google.com/store/apps/details?id=com.johnemulators.johngba"},
+{n:"MAME4droid Current",f:"arcade",c:"Arcade MAME, Neo Geo MVS/AES",s:"actif",v:"1.36.4 (MAME 0.288)",tv:"oui",l:"libre",min:"non vérifié",p:"Neo Geo et classiques passent bien sur Shield et Google TV Streamer. Sur une box S905X, préférez FBNeo.",note:"Les romsets doivent correspondre exactement à la version de MAME. Il existe aussi une version 0.139 pour les petites box.",u:"https://github.com/seleuco/MAME4droid-Current"},
+{n:"FinalBurn Neo",f:"arcade",c:"CPS1/2/3, Neo Geo, Cave, Toaplan, plus Mega Drive, PC Engine, MSX…",s:"actif",v:"commits continus",tv:"via",l:"gratuit",min:"celle du frontend",p:"Pleine vitesse sur quasiment toutes les box.",note:"S'utilise comme cœur dans RetroArch ou Lemuroid. Licence non commerciale.",u:"https://github.com/finalburnneo/FBNeo"},
+{n:"ES-DE",f:"front",c:"Interface pour plus de 150 systèmes",s:"actif",v:"3.4.1 · avr. 2026",tv:"oui",l:"payant",min:"non vérifié",p:"Léger.",note:"Interface de salon pilotée à la manette, qui lance RetroArch et les émulateurs autonomes. La version Android est payante, et le développeur demande de ne pas partager l'APK.",u:"https://www.es-de.org/"},
+{n:"Daijishō",f:"front",c:"Lanceur multi-émulateurs",s:"actif",v:"1.8.1 · janv. 2026",tv:"partiel",l:"gratuit",min:"8.0",p:"Léger.",note:"Se pilote à la manette et marche sur les box, sans interface Android TV officielle.",u:"https://github.com/TapiocaFox/Daijishou"},
+{n:"Dig",f:"front",c:"Lanceur, plus de 83 systèmes",s:"lent",v:"1.44.3",tv:"partiel",l:"freemium",min:"non vérifié",p:"Léger.",note:"Certains utilisateurs signalent qu'il ne retrouve plus les ROM. Disponible sur le Play Store.",u:""},
+{n:"Beacon Game Launcher",f:"front",c:"Lanceur rétro",s:"actif",v:"Play Store",tv:"?",l:"payant",min:"non vérifié",p:"Léger.",note:"Achat unique, sur le Play Store uniquement.",u:""},
+{n:"DuckStation",f:"sony",c:"PS1",s:"lent",v:"desktop nov. 2026 · port Android incertain",tv:"partiel",l:"gratuit",min:"non vérifié (arm64)",p:"Tourne très bien sur les box récentes.",note:"Mode plein écran piloté à la manette. Le code est consultable mais sous licence CC BY-NC-ND. L'avenir du port Android est incertain.",u:"https://github.com/stenzek/duckstation"},
+{n:"SwanStation",f:"sony",c:"PS1 (cœur RetroArch)",s:"lent",v:"cœur août 2025",tv:"via",l:"libre",min:"selon RetroArch (arm64)",p:"Tourne bien sur les box récentes.",note:"Fork libre (GPL) de DuckStation, utilisable dans RetroArch.",u:"https://github.com/libretro/swanstation"},
+{n:"ePSXe",f:"sony",c:"PS1",s:"actif",v:"2.0.19 · mai 2026",tv:"oui",l:"payant",min:"non vérifié",p:"Léger, tourne même sur les vieilles box.",note:"Présent sur le Play Store Android TV depuis longtemps.",u:"https://epsxe.com/android"},
+{n:"FPse",f:"sony",c:"PS1",s:"abandon",v:"pas de version récente",tv:"?",l:"payant",min:"inconnu",p:"",note:"Plus maintenu. Préférez SwanStation ou DuckStation.",u:""},
+{n:"NetherSX2",f:"sony",c:"PS2",s:"actif",v:"patch actif fin 2026",tv:"partiel",l:"gratuit",min:"8.0 (arm64)",p:"Shield : jeux légers seulement. Box Amlogic : non.",note:"Patch d'AetherSX2 (build 3668) : supprime la pub, met à jour la base de jeux et le support manette.",u:"https://github.com/Trixarian/NetherSX2-patch"},
+{n:"ARMSX2",f:"sony",c:"PS2",s:"actif",v:"2.9.1 · 28 oct. 2026",tv:"?",l:"libre",min:"non vérifié",p:"Demande un SoC puissant.",note:"Portage libre de PCSX2 pour ARM. Interface à la PCSX2, utilisable à la manette.",u:"https://github.com/ARMSX2/ARMSX2"},
+{n:"AetherSX2",f:"sony",c:"PS2",s:"abandon",v:"arrêté en 2023",tv:"partiel",l:"gratuit",min:"8.0 (arm64)",p:"",note:"Seule la page d'archive subsiste. Utilisez NetherSX2 ou ARMSX2.",u:"https://www.aethersx2.com/archive/"},
+{n:"PPSSPP",f:"sony",c:"PSP",s:"actif",v:"1.20.4 · mai 2026 (1.21 prévue à Noël)",tv:"oui",l:"libre",min:"5.0+ (KitKat abandonné)",p:"Beaucoup de jeux passent sur Chromecast et Google TV Streamer, tous sur Shield.",note:"Interface entièrement pilotable à la manette. PPSSPP Gold est une version de soutien payante, avec les mêmes fonctions.",u:"https://github.com/hrydgard/ppsspp"},
+{n:"Vita3K",f:"sony",c:"PS Vita",s:"exp",v:"Release 12 (2024), puis nightlies",tv:"non",l:"libre",min:"8.0",p:"Téléphone haut de gamme requis.",note:"Expérimental, interface tactile.",u:"https://github.com/Vita3K/Vita3K-Android"},
+{n:"aPS3e",f:"sony",c:"PS3",s:"exp",v:"Premium janv. 2026",tv:"non",l:"freemium",min:"7.0 · Vulkan · arm64",p:"Hors de portée d'une box TV.",note:"Basé sur RPCS3.",u:"https://github.com/aenu1/aps3e"},
+{n:"M64Plus FZ (Mupen64Plus AE)",f:"nin",c:"Nintendo 64",s:"actif",v:"3.0.335 bêta",tv:"oui",l:"libre",min:"non vérifié",p:"Les jeux légers passent sur les box, la ludothèque complète sur Shield.",note:"Le manifeste déclare le lanceur Android TV. La version Play Store gratuite contient de la pub, la version Pro est payante.",u:"https://github.com/mupen64plus-ae/mupen64plus-ae"},
+{n:"melonDS Android",f:"nin",c:"Nintendo DS / DSi",s:"actif",v:"2.0.1 · mai 2026",tv:"non",l:"libre",min:"7.0",p:"Correct sur Shield.",note:"Aucune entrée Android TV : il faut l'installer à la main (sideload). Les deux écrans de la DS sont peu pratiques sur une TV.",u:"https://github.com/rafaelvcaetano/melonDS-android"},
+{n:"DraStic",f:"nin",c:"Nintendo DS",s:"abandon",v:"r2.6.0.4a · 2024",tv:"oui",l:"payant",min:"non vérifié",p:"Très optimisé.",note:"Développement figé. Plusieurs sources indiquent qu'il a été retiré du Play Store début 2025.",u:"https://drastic-ds.com/"},
+{n:"Azahar",f:"nin",c:"Nintendo 3DS",s:"actif",v:"2126.2 · 8 oct. 2026",tv:"oui",l:"libre",min:"10",p:"Une box TV classique ne suffit pas. Il faut un Snapdragon récent.",note:"Successeur officiel de Citra (fusion de Lime3DS et du fork de PabloMK7). Méfiez-vous des faux APK « Azahar ».",u:"https://github.com/azahar-emu/azahar"},
+{n:"Mandarine-Neo",f:"nin",c:"Nintendo 3DS",s:"exp",v:"relancé début 2026",tv:"?",l:"libre",min:"9.0",p:"",note:"Suite de Mandarine/Lemonade, sans release publiée.",u:"https://github.com/ptyfyre/mandarine-neo"},
+{n:"Lime3DS",f:"nin",c:"Nintendo 3DS",s:"abandon",v:"fusionné dans Azahar",tv:"?",l:"libre",min:"",p:"",note:"Seule l'archive subsiste. Utilisez Azahar.",u:"https://github.com/Lime3DS/lime3ds-archive"},
+{n:"Citra MMJ",f:"nin",c:"Nintendo 3DS",s:"abandon",v:"arrêté vers 2023",tv:"?",l:"libre",min:"",p:"",note:"Remplacé par Azahar.",u:"https://github.com/weihuoya/citra"},
+{n:"Dolphin",f:"nin",c:"GameCube, Wii, Triforce",s:"actif",v:"2609 · sept. 2026",tv:"oui",l:"libre",min:"7.0 (64 bits)",p:"Shield : beaucoup de jeux. Chromecast et Streamer : limité.",note:"Interface Android TV dédiée. La version 2609 ajoute le NetPlay sur Android et une recherche dans les réglages.",u:"https://dolphin-emu.org/"},
+{n:"Dolphin MMJR2",f:"nin",c:"GameCube, Wii",s:"abandon",v:"≈ 2.0-17878",tv:"?",l:"libre",min:"",p:"",note:"Le Dolphin officiel a rattrapé ses optimisations.",u:"https://github.com/Mato00KAN/Dolphin-MMJR2"},
+{n:"Cemu (portage SSimco)",f:"nin",c:"Wii U",s:"exp",v:"0.5 · avr. 2026",tv:"non",l:"libre",min:"11 · Vulkan 1.1",p:"Hors de portée d'une box TV.",note:"Portage communautaire non officiel. Toute appli « Cemu » sur un store est une arnaque.",u:"https://github.com/SSimco/Cemu"},
+{n:"Eden",f:"nin",c:"Nintendo Switch",s:"actif",v:"0.2.1 · juin 2026",tv:"oui",l:"libre",min:"selon la variante",p:"Snapdragon requis en pratique. Pas jouable sur une box TV.",note:"Fork de yuzu, le plus actif. Le manifeste déclare le lanceur Android TV. Publié sur son propre Forgejo.",u:"https://git.eden-emu.dev/eden-emu/eden"},
+{n:"Citron Neo",f:"nin",c:"Nintendo Switch",s:"actif",v:"stable mars 2026",tv:"oui",l:"libre",min:"Vulkan requis",p:"Snapdragon requis en pratique.",note:"Reprend le code de Citron.",u:"https://github.com/citron-neo/emulator"},
+{n:"Strato",f:"nin",c:"Nintendo Switch",s:"abandon",v:"inactif depuis 2024",tv:"?",l:"libre",min:"",p:"",note:"Suite de Skyline, sans release.",u:"https://github.com/strato-emu/strato"},
+{n:"Sudachi · Suyu · Skyline",f:"nin",c:"Nintendo Switch",s:"abandon",v:"arrêtés 2023 à 2025",tv:"?",l:"libre",min:"",p:"",note:"Abandonnés. Les APK qui circulent sous ces noms sont souvent faux. Utilisez Eden.",u:"https://github.com/skyline-emu/skyline"},
+{n:"Yaba Sanshiro 2",f:"sega",c:"Saturn, ST-V",s:"actif",v:"mises à jour 2026",tv:"partiel",l:"freemium",min:"non vérifié",p:"Pleine vitesse rapportée sur Shield.",note:"Basé sur Yabause (libre). Gratuit avec pub, version Pro payante.",u:"https://www.uoyabause.org/"},
+{n:"Flycast",f:"sega",c:"Dreamcast, NAOMI 1/2, Atomiswave",s:"actif",v:"2.7 · août 2026",tv:"oui",l:"libre",min:"non vérifié",p:"Très bon sur les box récentes.",note:"Sur le Play Store depuis la v2.4. Interface pilotable à la manette.",u:"https://github.com/flyinghead/flycast"},
+{n:"Redream",f:"sega",c:"Dreamcast",s:"lent",v:"1.2.12 · ≈ août 2026",tv:"oui",l:"freemium",min:"non vérifié",p:"Très optimisé, idéal sur les petites box.",note:"L'option Premium (environ 5 $) débloque l'upscaling et les sauvegardes multiples.",u:"https://redream.io/"},
+{n:"X1 BOX (portage xemu)",f:"pc",c:"Xbox originale",s:"exp",v:"2026",tv:"non",l:"libre",min:"8.0 · Vulkan · 8 Go de RAM conseillés",p:"Hors de portée d'une box TV.",note:"Gratuit sur GitHub (GPL), payant sur Google Play.",u:"https://github.com/izzy2lost/xemu"},
+{n:"hakuX",f:"pc",c:"Xbox originale",s:"actif",v:"1.2.0 · oct. 2026",tv:"non",l:"libre",min:"arm64 + Vulkan",p:"Téléphone puissant requis.",note:"Projet récent, sorti fin octobre 2026.",u:"https://github.com/rfandango/hakuX"},
+{n:"aX360e",f:"pc",c:"Xbox 360",s:"exp",v:"bêta depuis déc. 2025",tv:"non",l:"freemium",min:"9 · Vulkan · arm64",p:"Hors de portée d'une box TV.",note:"Basé sur Xenia, du même auteur qu'aPS3e.",u:"https://github.com/aenu1/ax360e"},
+{n:"Winlator",f:"pc",c:"Jeux PC Windows x86/x64",s:"actif",v:"11.2 · août 2026",tv:"non",l:"libre",min:"non vérifié",p:"Snapdragon requis.",note:"Wine + Box64. Interface faite pour la souris, la manette s'assigne par jeu.",u:"https://github.com/brunodev85/winlator"},
+{n:"Winlator Ludashi",f:"pc",c:"Jeux PC Windows",s:"actif",v:"2026",tv:"non",l:"libre",min:"",p:"Snapdragon requis.",note:"Fork communautaire de Winlator.",u:"https://github.com/StevenMXZ/Winlator-Ludashi"},
+{n:"GameHub (GameSir)",f:"pc",c:"Jeux PC Windows + cloud",s:"actif",v:"août 2026",tv:"?",l:"gratuit",min:"",p:"Snapdragon requis.",note:"Appli fermée. Pour la confidentialité, préférez la version « Lite » communautaire.",u:""},
+{n:"Mobox",f:"pc",c:"Jeux PC Windows (Termux)",s:"abandon",v:"archivé juin 2025",tv:"non",l:"gratuit",min:"10",p:"",note:"Utilisez Winlator.",u:"https://github.com/olegos2/mobox"},
+{n:"Magic DOSBox",f:"pc",c:"MS-DOS",s:"lent",v:"Lite 1.0.101",tv:"partiel",l:"freemium",min:"",p:"Léger.",note:"Interface tactile, utilisable à la manette.",u:"https://magicbox.imejl.sk/"},
+{n:"DosBox Turbo",f:"pc",c:"MS-DOS",s:"abandon",v:"stagnant",tv:"non",l:"payant",min:"",p:"",note:"Préférez Magic DOSBox ou le cœur DOSBox Pure de RetroArch.",u:"https://sourceforge.net/app/dosbox-turbo/android/"},
+{n:"Xbox Cloud Gaming",f:"pc",c:"Jeux Xbox / Game Pass en streaming",s:"actif",v:"appli Google TV, sept. 2026",tv:"partiel",l:"abo",min:"",p:"Aucune puissance requise, il faut une bonne connexion.",note:"Usage naturel de la Xbox Nano. Appli native sur certaines TV TCL, sideload sur les autres box. Abonnement Game Pass Ultimate requis.",u:"https://www.xbox.com/play"}
+];
+const order=["retro","arcade","front","sony","nin","sega","pc"];
+let fam="all";
+const famEl=document.getElementById("fam");
+[["all","Toutes"],...order.map(k=>[k,FAM[k]])].forEach(([k,label])=>{
+  const b=document.createElement("button");b.className="chip";b.type="button";b.id="fam-"+k;b.textContent=label;
+  b.setAttribute("aria-pressed",k==="all");b.onclick=()=>{fam=k;famEl.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x===b));render()};
+  famEl.appendChild(b);
+});
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const badge=([t,c])=>`<span class="b ${c}">${t}</span>`;
+function card(e){
+  const host=e.u?new URL(e.u).hostname.replace(/^www\./,""):"";
+  const rows=[["Version",e.v],["Android min.",e.min],["Puissance",e.p]].filter(r=>r[1]);
+  return `<article class="card${e.s==="abandon"?" dead":""}">
+    <div class="top"><div><h3>${esc(e.n)}</h3><div class="sys">${esc(e.c)}</div></div></div>
+    <div class="badges">${badge(ST[e.s])}${badge(TV[e.tv])}${badge(LIC[e.l])}</div>
+    <dl>${rows.map(r=>`<dt>${r[0]}</dt><dd>${esc(r[1])}</dd>`).join("")}</dl>
+    <p class="note">${esc(e.note)}</p>
+    ${e.u?`<a class="link" href="${esc(e.u)}" target="_blank" rel="noopener">${esc(host)} ↗</a>`:`<span class="link" style="color:var(--muted)">Play Store uniquement</span>`}
+  </article>`;
+}
+function render(){
+  const q=document.getElementById("q").value.trim().toLowerCase();
+  const tvOnly=document.getElementById("tvOnly").checked, hide=document.getElementById("hideDead").checked;
+  const list=D.filter(e=>(fam==="all"||e.f===fam)&&(!tvOnly||e.tv==="oui"||e.tv==="via")&&(!hide||e.s!=="abandon")&&(!q||(e.n+" "+e.c+" "+e.note).toLowerCase().includes(q)));
+  document.getElementById("count").textContent=list.length+" / "+D.length+" projets";
+  const out=document.getElementById("out");
+  if(!list.length){out.innerHTML='<p class="empty">Aucun projet ne correspond. Essayez de décocher un filtre.</p>';return}
+  out.innerHTML=order.filter(k=>list.some(e=>e.f===k)).map(k=>{
+    const items=list.filter(e=>e.f===k);
+    return `<section class="group"><h2>${FAM[k]} <small>${items.length}</small></h2><div class="cards">${items.map(card).join("")}</div></section>`;
+  }).join("");
+}
+document.getElementById("q").addEventListener("input",render);
+document.getElementById("tvOnly").addEventListener("change",render);
+document.getElementById("hideDead").addEventListener("change",render);
+render();
+</script>
+</body>
+</html>
